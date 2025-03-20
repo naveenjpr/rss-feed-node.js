@@ -18,7 +18,7 @@ server.get("/rss", async (req, res) => {
     // RSS फीड URLs
     const feedUrls = [
       "https://www.gsmarena.com/rss-news-reviews.php3",
-      "https://www.espncricinfo.com/rss/content/story/feeds/6.xml",
+      "https://www.bhaskar.com/rss-v1--category-1740.xml",
       "https://feeds.feedburner.com/TechCrunch/",
       "https://www.indiatv.in/rssnews/topstory.xml",
     ]
@@ -62,8 +62,6 @@ server.get("/rss", async (req, res) => {
         console.error(`Error fetching ${url}:`, feedError)
       }
     }
-
-    // console.log("Processed Items:", JSON.stringify(allItems, null, 2)) // Debugging
 
     // JSON फॉर्मेट में डेटा भेजें
     res.json({ items: allItems })
