@@ -9,9 +9,13 @@ server.use(cors())
 server.use(express.json())
 server.use(express.urlencoded({ extended: true }))
 
+
+require('./src/routes/backend/QuizApp.routes')(server)
 server.get("/", (request, response) => {
   response.send("Server Working Fine.....")
 })
+
+
 
 server.get("/rss", async (req, res) => {
   try {
@@ -71,50 +75,7 @@ server.get("/rss", async (req, res) => {
   }
 })
 
-// server.get("/rss", async (req, res) => {
-//   try {
-//     // RSS फीड URL
-//     const feed = await parser.parseURL(
-//       "https://www.gsmarena.com/rss-news-reviews.php3"
-//     )
 
-//     console.log("Feed Title:", feed.title)
-
-//     // सभी आर्टिकल्स को एक्सट्रैक्ट करें
-//     const items = feed.items.map((item) => {
-//       let imageUrl = ""
-
-//       // Check different possible sources for image URL
-//       if (item.enclosure && item.enclosure.url) {
-//         imageUrl = item.enclosure.url
-//       } else if (item["media:content"] && item["media:content"].url) {
-//         imageUrl = item["media:content"].url
-//       } else {
-//         // Extract image from description HTML
-//         const regex = /<img[^>]+src="([^">]+)"/g
-//         const match = regex.exec(item.content || item.description)
-//         if (match) {
-//           imageUrl = match[1] // Extracted image URL
-//         }
-//       }
-
-//       return {
-//         title: item.title,
-//         link: item.link,
-//         pubDate: item.pubDate,
-//         imageUrl: imageUrl || "https://via.placeholder.com/150", // Default image
-//       }
-//     })
-
-//     console.log("Processed Items:", JSON.stringify(items, null, 2)) // Debugging
-
-//     // JSON फॉर्मेट में डेटा भेजें
-//     res.json({ title: feed.title, items })
-//   } catch (err) {
-//     console.error("Error fetching RSS feed:", err)
-//     res.status(500).json({ error: "Failed to fetch RSS feed" })
-//   }
-// })
 
 server.get("*", (request, response) => {
   response.send("Page not found.....")
