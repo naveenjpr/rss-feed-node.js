@@ -11,6 +11,9 @@ server.use(express.urlencoded({ extended: true }))
 
 
 require('./src/routes/backend/QuizApp.routes')(server)
+require('./src/routes/backend/Javascript.routes')(server)
+require('./src/routes/backend/ReactNotes.routes')(server)
+require('./src/routes/backend/Node_js.routes')(server)
 server.get("/", (request, response) => {
   response.send("Server Working Fine.....")
 })
@@ -21,9 +24,9 @@ server.get("/rss", async (req, res) => {
   try {
     // RSS फीड URLs
     const feedUrls = [
-      "https://www.gsmarena.com/rss-news-reviews.php3",
-      "https://www.bhaskar.com/rss-v1--category-1740.xml",
-      "https://feeds.feedburner.com/TechCrunch/",
+      "https://nsearchives.nseindia.com/content/RSS/Corporate_action.xml",
+      "https://nsearchives.nseindia.com/content/RSS/Daily_Buyback.xml",
+      "https://nsearchives.nseindia.com/content/RSS/Voting_Results.xml",
       "https://www.indiatv.in/rssnews/topstory.xml",
     ]
 
