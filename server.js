@@ -8,6 +8,7 @@ server.use(cors())
 
 server.use(express.json())
 server.use(express.urlencoded({ extended: true }))
+server.use("/uploads/javascript",express.static('uploads/javascript'))
 
 
 require('./src/routes/backend/QuizApp.routes')(server)

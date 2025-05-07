@@ -47,7 +47,7 @@ exports.view=async(request,response)=>{
             var res = {
                 status: true,
                 message: 'Record found successfully !!',
-                // imagePath:""
+                imagePath:"https://rss-feed-node-js.onrender.com/api/backend/uploads/images",
                 data: result
             }
 
