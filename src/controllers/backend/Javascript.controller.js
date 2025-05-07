@@ -5,9 +5,12 @@ data =new courseModel(
     
     {Question:request.body.Question,
     Answers:request.body.Answers,
-    // image:request.body.image
     })
-
+if (request.file != undefined){
+    if(request.file.filename !=""){
+        data.image=request.file.filename;
+    }
+}
 
 await data.save().then((result)=>{
     var res={
@@ -44,6 +47,7 @@ exports.view=async(request,response)=>{
             var res = {
                 status: true,
                 message: 'Record found successfully !!',
+                // imagePath:""
                 data: result
             }
 
@@ -53,6 +57,7 @@ exports.view=async(request,response)=>{
             var res = {
                 status: false,
                 message: 'No Record found !!',
+
                 data: ''
             }
 

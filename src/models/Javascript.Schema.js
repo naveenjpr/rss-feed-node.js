@@ -13,10 +13,9 @@ const JavascriptSchema = new mongoose.Schema({
         unique: true,
 
     },
-    // image: {
-    //     type: String,
-    //     // required : [true, 'Course Image is required'],
-    // },
+    image: {
+        type: String,
+    },
  
     status: {
         type: Boolean,
