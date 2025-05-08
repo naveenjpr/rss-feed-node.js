@@ -100,14 +100,13 @@ exports.details=async(request,response)=>{
 }
 
 exports.update=async(request,response)=>{
-    console.log(request.body)
-data =new courseModel(
+
     
-    {Question:request.body.Question,
+data ={Question:request.body.Question,
     Answers:request.body.Answers,
     // image:request.body.image
-    })
-await courseModel.updateOne({_id:request.body.id},{$set:data}) .then((result) => {
+    }
+await courseModel.updateOne({_id:request.params.id},{$set:data}) .then((result) => {
 
     var res = {
         status: true,
