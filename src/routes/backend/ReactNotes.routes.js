@@ -14,7 +14,7 @@ module.exports = app => {
 
     route.post('/details/:id',upload.none(), ReactNotesController.details) // http://localhost:5000/api/backend/ReactNotes/details
 
-    route.post('/update',upload.none(), ReactNotesController.update) // http://localhost:5000/api/backend/ReactNotes/update
+    route.put('/update',upload.none(), ReactNotesController.update) // http://localhost:5000/api/backend/ReactNotes/update
 
     route.put('/change-status',upload.none(), ReactNotesController.changeStatus) // http://localhost:5000/api/backend/ReactNotes/change-status
 

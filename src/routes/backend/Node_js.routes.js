@@ -14,7 +14,7 @@ module.exports = app => {
 
     route.post('/details/:id',upload.none(), Node_jsController.details) // http://localhost:5000/api/backend/node-js-Notes/details
 
-    route.post('/update',upload.none(), Node_jsController.update) // http://localhost:5000/api/backend/node-js-Notes/update
+    route.put('/update',upload.none(), Node_jsController.update) // http://localhost:5000/api/backend/node-js-Notes/update
 
     route.put('/change-status',upload.none(), Node_jsController.changeStatus) // http://localhost:5000/api/backend/node-js-Notes/change-status
 
