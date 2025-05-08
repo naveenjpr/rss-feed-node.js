@@ -28,7 +28,7 @@ module.exports = app => {
 
     route.post('/details/:id', JavscriptController.details) // http://localhost:5000/api/backend/javascript/details
 
-    route.put('/update',uploadImage, JavscriptController.update) // http://localhost:5000/api/backend/javascript/update
+    route.post('/update',uploadImage, JavscriptController.update) // http://localhost:5000/api/backend/javascript/update
 
     route.put('/change-status', JavscriptController.changeStatus) // http://localhost:5000/api/backend/javascript/change-status
 
