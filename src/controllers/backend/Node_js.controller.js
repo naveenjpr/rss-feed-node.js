@@ -5,7 +5,7 @@ data =new courseModel(
     
     {Question:request.body.Question,
     Answers:request.body.Answers,
-    // image:request.body.image
+    status:request.body.status ? request.body.status : true ,
     })
 
 
@@ -99,40 +99,45 @@ exports.details=async(request,response)=>{
 
 }
 
-exports.update=async(request,response)=>{
-    console.log(request.body)
-data =new courseModel(
-    
-    {Question:request.body.Question,
-    Answers:request.body.Answers,
-    // image:request.body.image
-    })
-await courseModel.updateOne({_id:request.body.id},{$set:data}) .then((result) => {
+exports.update = async (request, response) => {
+    const data = {
+        Question: request.body.Question,
+        Answers: request.body.Answers,
+        status:request.body.status ?? 1,
+    };
 
-    var res = {
-        status: true,
-        message: 'Record update succussfully',
-        data: result
+    try {
+        const result = await courseModel.updateOne(
+            { _id: request.params.id },
+            { $set: data }
+        );
+
+        const res = {
+            status: true,
+            message: 'Record updated successfully',
+            data: result,
+        };
+        response.send(res);
+    } catch (error) {
+        let error_messages = [];
+
+        if (error.errors) {
+            for (let field in error.errors) {
+                error_messages.push(error.errors[field].message);
+            }
+        } else {
+            error_messages.push(error.message);
+        }
+
+        const res = {
+            status: false,
+            message: 'Something went wrong',
+            error_messages: error_messages,
+        };
+
+        response.status(500).send(res);
     }
-
-    response.send(res);
-}).catch((error) => {
-    var error_messages = [];
-
-    for (let field in error.errors) {
-        // console.log(field);
-        error_messages.push(error.errors[field].message);
-    }
-
-    var res = {
-        status: false,
-        message: 'Something went wrong',
-        error_messages: error_messages
-    }
-
-    response.send(res);
-})
-}
+};
 exports.changeStatus=async(request,response)=>{
 
     await courseModel.updateOne(
