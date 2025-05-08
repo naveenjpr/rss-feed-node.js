@@ -9,10 +9,6 @@ const ReactNotesSchema = new mongoose.Schema({
         type: String,
         required: [true, ' react Answers  is required'],
     },
-    // image: {
-    //     type: String,
-    //     // required : [true, 'Course Image is required'],
-    // },
  
     status: {
         type: Boolean,

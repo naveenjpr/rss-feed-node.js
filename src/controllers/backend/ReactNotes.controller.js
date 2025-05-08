@@ -5,7 +5,7 @@ data =new courseModel(
     
     {Question:request.body.Question,
     Answers:request.body.Answers,
-    // image:request.body.image
+    status:request.body.status ? request.body.status : true ,
     })
 
 
@@ -103,6 +103,7 @@ exports.update = async (request, response) => {
     const data = {
         Question: request.body.Question,
         Answers: request.body.Answers,
+        status:request.body.status ?? 1,
     };
 
     try {
