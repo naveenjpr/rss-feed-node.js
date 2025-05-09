@@ -15,6 +15,7 @@ require('./src/routes/backend/QuizApp.routes')(server)
 require('./src/routes/backend/Javascript.routes')(server)
 require('./src/routes/backend/ReactNotes.routes')(server)
 require('./src/routes/backend/Node_js.routes')(server)
+require('./src/routes/backend/WordPress.routes')(server)
 server.get("/", (request, response) => {
   response.send("Server Working Fine.....")
 })
