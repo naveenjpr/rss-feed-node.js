@@ -39,7 +39,7 @@ await data.save().then((result)=>{
 
 exports.view=async(request,response)=>{
 
-    await courseModel.find().then((result)=>{
+    await courseModel.find().sort({ _id: -1 }).then((result)=>{
         if (result.length > 0) {
             var res = {
                 status: true,

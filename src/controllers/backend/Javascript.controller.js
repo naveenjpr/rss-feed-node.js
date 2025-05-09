@@ -1,55 +1,56 @@
-const courseModel=require('../../models/Javascript.Schema')
+const courseModel = require('../../models/Javascript.Schema')
 
-exports.create=async(request,response)=>{
-data =new courseModel(
-    
-    {Question:request.body.Question,
-    Answers:request.body.Answers,
-    status:request.body.status ? request.body.status : true ,
+exports.create = async (request, response) => {
+    data = new courseModel(
+
+        {
+            Question: request.body.Question,
+            Answers: request.body.Answers,
+            status: request.body.status ? request.body.status : true,
+
+        })
+    if (request.file != undefined) {
+        if (request.file.filename != "") {
+            data.image = request.file.filename;
+        }
+    }
+
+    await data.save().then((result) => {
+        var res = {
+            status: true,
+            message: "record create successfully",
+            data: result
+        }
+        response.send(res)
+    }).catch((error) => {
+
+        var error_messages = [];
+
+        for (let field in error.errors) {
+            // console.log(field);
+            error_messages.push(error.errors[field].message);
+        }
+
+        var res = {
+            status: false,
+            message: 'Something went wrong',
+            error_messages: error_messages
+        }
+
+        response.send(res);
 
     })
-if (request.file != undefined){
-    if(request.file.filename !=""){
-        data.image=request.file.filename;
-    }
-}
-
-await data.save().then((result)=>{
-    var res={
-        status:true,
-        message:"record create successfully",
-        data:result
-    }
-    response.send(res)
-}).catch((error)=>{
-
-    var error_messages = [];
-
-    for (let field in error.errors) {
-        // console.log(field);
-        error_messages.push(error.errors[field].message);
-    }
-
-    var res = {
-        status: false,
-        message: 'Something went wrong',
-        error_messages: error_messages
-    }
-
-    response.send(res);
-
-})
 
 }
 
-exports.view=async(request,response)=>{
+exports.view = async (request, response) => {
 
-    await courseModel.find().then((result)=>{
+    await courseModel.find().sort({ _id: -1 }).then((result) => {
         if (result.length > 0) {
             var res = {
                 status: true,
                 message: 'Record found successfully !!',
-                imagePath:"https://rss-feed-node-js.onrender.com/api/backend/uploads/images",
+                imagePath: "https://rss-feed-node-js.onrender.com/api/backend/uploads/images",
                 data: result
             }
 
@@ -65,7 +66,7 @@ exports.view=async(request,response)=>{
 
             response.send(res);
         }
-    }).catch((error)=>{
+    }).catch((error) => {
         var res = {
             status: false,
             message: 'Something went wrong !!',
@@ -75,8 +76,8 @@ exports.view=async(request,response)=>{
     })
 
 }
-exports.details=async(request,response)=>{
-    await courseModel.findById(request.params.id).then((result)=>{
+exports.details = async (request, response) => {
+    await courseModel.findById(request.params.id).then((result) => {
         if (result != '') {
             var res = {
                 status: true,
@@ -95,7 +96,7 @@ exports.details=async(request,response)=>{
             response.send(res);
         }
 
-    }).catch((error)=>{
+    }).catch((error) => {
         var res = {
             status: false,
             message: 'Something went wrong !!',
@@ -110,7 +111,7 @@ exports.update = async (request, response) => {
     const data = {
         Question: request.body.Question,
         Answers: request.body.Answers,
-        status:request.body.status ?? 1,
+        status: request.body.status ?? 1,
     };
 
     try {
@@ -146,7 +147,7 @@ exports.update = async (request, response) => {
     }
 };
 
-exports.changeStatus=async(request,response)=>{
+exports.changeStatus = async (request, response) => {
 
     await courseModel.updateOne(
         {
@@ -178,22 +179,22 @@ exports.changeStatus=async(request,response)=>{
         })
 
 }
-exports.delete=async(request,response)=>{
+exports.delete = async (request, response) => {
     try {
         const courseId = request.params.id; // Assuming route is like /api/courses/:id
-    
+
         const deletedCourse = await courseModel.findByIdAndDelete(courseId);
-    
+
         if (!deletedCourse) {
-          return response.status(404).json({ message: "Course not found" });
+            return response.status(404).json({ message: "Course not found" });
         }
-    
+
         return response.status(200).json({ message: " javascript question deleted successfully" });
-      } catch (error) {
+    } catch (error) {
         console.error(error);
         return response.status(500).json({ message: "Server error" });
-      }
+    }
 }
-exports.multipleDelete=async(request,response)=>{
+exports.multipleDelete = async (request, response) => {
 
 }
