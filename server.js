@@ -10,12 +10,19 @@ server.use(express.json())
 server.use(express.urlencoded({ extended: true }))
 server.use("/uploads/javascript",express.static('uploads/javascript'))
 
-
+//backend Api
 require('./src/routes/backend/QuizApp.routes')(server)
 require('./src/routes/backend/Javascript.routes')(server)
 require('./src/routes/backend/ReactNotes.routes')(server)
 require('./src/routes/backend/Node_js.routes')(server)
 require('./src/routes/backend/WordPress.routes')(server)
+
+// frontend api
+require('./src/routes/frontend/Javascript.routes')(server)
+require('./src/routes/frontend/ReactNotes.routes')(server)
+require('./src/routes/frontend/Node_js.routes')(server)
+require('./src/routes/frontend/WordPress.routes')(server)
+
 server.get("/", (request, response) => {
   response.send("Server Working Fine.....")
 })
