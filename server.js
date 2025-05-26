@@ -30,63 +30,63 @@ server.get("/", (request, response) => {
 
 
 
-server.get("/rss", async (req, res) => {
-  try {
-    // RSS फीड URLs
-    const feedUrls = [
-      "https://nsearchives.nseindia.com/content/RSS/Corporate_action.xml",
-      "https://nsearchives.nseindia.com/content/RSS/Daily_Buyback.xml",
-      "https://nsearchives.nseindia.com/content/RSS/Voting_Results.xml",
-      "https://www.indiatv.in/rssnews/topstory.xml",
-    ]
+// server.get("/rss", async (req, res) => {
+//   try {
+//     // RSS फीड URLs
+//     const feedUrls = [
+//       "https://nsearchives.nseindia.com/content/RSS/Corporate_action.xml",
+//       "https://nsearchives.nseindia.com/content/RSS/Daily_Buyback.xml",
+//       "https://nsearchives.nseindia.com/content/RSS/Voting_Results.xml",
+//       "https://www.indiatv.in/rssnews/topstory.xml",
+//     ]
 
-    let allItems = []
+//     let allItems = []
 
-    // सभी RSS फीड्स को प्रोसेस करें
-    for (const url of feedUrls) {
-      try {
-        const feed = await parser.parseURL(url)
-        // console.log("Fetching Feed:", feed.title)
+//     // सभी RSS फीड्स को प्रोसेस करें
+//     for (const url of feedUrls) {
+//       try {
+//         const feed = await parser.parseURL(url)
+//         // console.log("Fetching Feed:", feed.title)
 
-        const items = feed.items.map((item) => {
-          let imageUrl = ""
+//         const items = feed.items.map((item) => {
+//           let imageUrl = ""
 
-          // Check different possible sources for image URL
-          if (item.enclosure && item.enclosure.url) {
-            imageUrl = item.enclosure.url
-          } else if (item["media:content"] && item["media:content"].url) {
-            imageUrl = item["media:content"].url
-          } else {
-            // Extract image from description HTML
-            const regex = /<img[^>]+src="([^">]+)"/g
-            const match = regex.exec(item.content || item.description)
-            if (match) {
-              imageUrl = match[1] // Extracted image URL
-            }
-          }
+//           // Check different possible sources for image URL
+//           if (item.enclosure && item.enclosure.url) {
+//             imageUrl = item.enclosure.url
+//           } else if (item["media:content"] && item["media:content"].url) {
+//             imageUrl = item["media:content"].url
+//           } else {
+//             // Extract image from description HTML
+//             const regex = /<img[^>]+src="([^">]+)"/g
+//             const match = regex.exec(item.content || item.description)
+//             if (match) {
+//               imageUrl = match[1] // Extracted image URL
+//             }
+//           }
 
-          return {
-            title: item.title,
-            link: item.link,
-            pubDate: item.pubDate,
-            source: feed.title, // Feed का नाम जोड़ें
-            imageUrl: imageUrl || "https://via.placeholder.com/150",
-          }
-        })
+//           return {
+//             title: item.title,
+//             link: item.link,
+//             pubDate: item.pubDate,
+//             source: feed.title, // Feed का नाम जोड़ें
+//             imageUrl: imageUrl || "https://via.placeholder.com/150",
+//           }
+//         })
 
-        allItems = [...allItems, ...items] // सभी आर्टिकल्स को मर्ज करें
-      } catch (feedError) {
-        console.error(`Error fetching ${url}:`, feedError)
-      }
-    }
+//         allItems = [...allItems, ...items] // सभी आर्टिकल्स को मर्ज करें
+//       } catch (feedError) {
+//         console.error(`Error fetching ${url}:`, feedError)
+//       }
+//     }
 
-    // JSON फॉर्मेट में डेटा भेजें
-    res.json({ items: allItems })
-  } catch (err) {
-    console.error("Error fetching RSS feeds:", err)
-    res.status(500).json({ error: "Failed to fetch RSS feeds" })
-  }
-})
+//     // JSON फॉर्मेट में डेटा भेजें
+//     res.json({ items: allItems })
+//   } catch (err) {
+//     console.error("Error fetching RSS feeds:", err)
+//     res.status(500).json({ error: "Failed to fetch RSS feeds" })
+//   }
+// })
 
 
 
