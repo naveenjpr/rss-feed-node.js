@@ -22,6 +22,7 @@ require('./src/routes/frontend/Javascript.routes')(server)
 require('./src/routes/frontend/ReactNotes.routes')(server)
 require('./src/routes/frontend/Node_js.routes')(server)
 require('./src/routes/frontend/WordPress.routes')(server)
+require('./src/routes/frontend/authentication.routes')(server)
 
 server.get("/", (request, response) => {
   response.send("Server Working Fine.....")

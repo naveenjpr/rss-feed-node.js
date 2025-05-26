@@ -30,6 +30,8 @@ exports.view = async (request, response) => {
         var res = {
             status: false,
             message: 'Something went wrong !!',
+            error:error.message
+
         }
 
         response.send(res);
