@@ -40,12 +40,15 @@ exports.create = async (request, response) => {
 }
 
 exports.view = async (request, response) => {
+    const totalRecords = await courseModel.countDocuments();
+
 
     await courseModel.find().sort({ _id: -1 }).then((result) => {
         if (result.length > 0) {
             var res = {
                 status: true,
                 message: 'Record found successfully !!',
+                totalRecords:totalRecords,
                 data: result
             }
 
