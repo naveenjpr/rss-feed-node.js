@@ -69,7 +69,7 @@ exports.login = async (request, response) => {
               userData: result,
             },
             secretKey,
-            { expiresIn: "1h" }
+            { expiresIn: "3650d" }
           )
 
           var resp = {
