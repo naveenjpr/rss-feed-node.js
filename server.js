@@ -16,6 +16,7 @@ require('./src/routes/backend/Javascript.routes')(server)
 require('./src/routes/backend/ReactNotes.routes')(server)
 require('./src/routes/backend/Node_js.routes')(server)
 require('./src/routes/backend/WordPress.routes')(server)
+require('./src/routes/backend/HTML_CSS.routes ')(server)
 
 // frontend api
 require('./src/routes/frontend/Javascript.routes')(server)
