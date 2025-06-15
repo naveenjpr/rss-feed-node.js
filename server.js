@@ -17,6 +17,7 @@ require('./src/routes/backend/ReactNotes.routes')(server)
 require('./src/routes/backend/Node_js.routes')(server)
 require('./src/routes/backend/WordPress.routes')(server)
 require('./src/routes/backend/HTML_CSS.routes ')(server)
+require('./src/routes/backend/English.routes')(server)
 
 // frontend api
 require('./src/routes/frontend/Javascript.routes')(server)
@@ -25,6 +26,7 @@ require('./src/routes/frontend/Node_js.routes')(server)
 require('./src/routes/frontend/WordPress.routes')(server)
 require('./src/routes/frontend/authentication.routes')(server)
 require('./src/routes/frontend/HTML_CSS.routes')(server)
+require('./src/routes/frontend/English.routes')(server)
 
 server.get("/", (request, response) => {
   response.send("Server Working Fine.....")

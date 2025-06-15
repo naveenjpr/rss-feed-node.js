@@ -1,4 +1,4 @@
-const courseModel = require('../../models/HTML_CSS.Schema')
+const courseModel = require('../../models/English.Schema')
 
 exports.create = async (request, response) => {
     console.log(request.body)
@@ -190,9 +190,12 @@ exports.delete = async (request, response) => {
             return response.status(404).json({ message: "react notes not found" });
         }
 
-        return response.status(200).json({ message: " html css  question deleted successfully" });
+        return response.status(200).json({ message: " react  question deleted successfully" });
     } catch (error) {
         console.error(error);
         return response.status(500).json({ message: "Server error" });
     }
+}
+exports.multipleDelete = async (request, response) => {
+
 }
