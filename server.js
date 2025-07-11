@@ -8,7 +8,10 @@ server.use(cors())
 
 server.use(express.json())
 server.use(express.urlencoded({ extended: true }))
-server.use("/uploads/javascript",express.static('uploads/javascript'))
+server.use("/uploads/javascript", express.static('uploads/javascript'))
+const adminModel = require('./src/models/AdminModel.Schema');
+
+
 
 //backend Api
 require('./src/routes/backend/QuizApp.routes')(server)
@@ -19,6 +22,7 @@ require('./src/routes/backend/WordPress.routes')(server)
 require('./src/routes/backend/HTML_CSS.routes ')(server)
 require('./src/routes/backend/English.routes')(server)
 require('./src/routes/backend/livewebsite.routes')(server)
+require('./src/routes/backend/adminAuth.routes')(server)
 
 // frontend api
 require('./src/routes/frontend/Javascript.routes')(server)
@@ -104,7 +108,14 @@ mongoose
   .connect(
     "mongodb+srv://naveensainijpr:Gionee123@cluster0.fdq1d.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
   )
-  .then(() => {
+  .then(async () => {
+
+    const checkAdmin = await adminModel.find();
+    if (checkAdmin.length == 0) {
+      let admin = await adminModel({ adminName: 'admin', adminPassword: 'admin123' });
+      await admin.save();
+    }
+
     server.listen("5000", () => {
       console.log("Database Connected!")
     })
