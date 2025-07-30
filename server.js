@@ -23,6 +23,7 @@ require('./src/routes/backend/HTML_CSS.routes ')(server)
 require('./src/routes/backend/English.routes')(server)
 require('./src/routes/backend/livewebsite.routes')(server)
 require('./src/routes/backend/adminAuth.routes')(server)
+require('./src/routes/backend/Menka.routes')(server)
 
 // frontend api
 require('./src/routes/frontend/Javascript.routes')(server)
