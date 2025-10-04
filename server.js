@@ -26,6 +26,7 @@ require('./src/routes/backend/adminAuth.routes')(server)
 require('./src/routes/backend/Menka.routes')(server)
 require('./src/routes/backend/Nextjs.routes')(server)
 require('./src/routes/backend/AWS.routes')(server)
+require('./src/routes/backend/TypeScript.routes')(server)
 
 // frontend api
 require('./src/routes/frontend/Javascript.routes')(server)
