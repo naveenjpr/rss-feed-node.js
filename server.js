@@ -1,50 +1,47 @@
-const express = require("express")
-const cors = require("cors")
-const mongoose = require("mongoose")
-let Parser = require("rss-parser")
-let parser = new Parser()
-const server = express()
-server.use(cors())
+const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
+let Parser = require("rss-parser");
+let parser = new Parser();
+const server = express();
+server.use(cors());
 
-server.use(express.json())
-server.use(express.urlencoded({ extended: true }))
-server.use("/uploads/javascript", express.static('uploads/javascript'))
-const adminModel = require('./src/models/AdminModel.Schema');
-
-
+server.use(express.json());
+server.use(express.urlencoded({ extended: true }));
+server.use("/uploads/javascript", express.static("uploads/javascript"));
+const adminModel = require("./src/models/AdminModel.Schema");
 
 //backend Api
-require('./src/routes/backend/QuizApp.routes')(server)
-require('./src/routes/backend/Javascript.routes')(server)
-require('./src/routes/backend/ReactNotes.routes')(server)
-require('./src/routes/backend/Node_js.routes')(server)
-require('./src/routes/backend/WordPress.routes')(server)
-require('./src/routes/backend/HTML_CSS.routes ')(server)
-require('./src/routes/backend/English.routes')(server)
-require('./src/routes/backend/livewebsite.routes')(server)
-require('./src/routes/backend/adminAuth.routes')(server)
-require('./src/routes/backend/Menka.routes')(server)
-require('./src/routes/backend/Nextjs.routes')(server)
-require('./src/routes/backend/AWS.routes')(server)
-require('./src/routes/backend/TypeScript.routes')(server)
-require('./src/routes/backend/Github.routes')(server)
-require('./src/routes/backend/SQL.routes')(server)
+require("./src/routes/backend/QuizApp.routes")(server);
+require("./src/routes/backend/Javascript.routes")(server);
+require("./src/routes/backend/ReactNotes.routes")(server);
+require("./src/routes/backend/Node_js.routes")(server);
+require("./src/routes/backend/WordPress.routes")(server);
+require("./src/routes/backend/HTML_CSS.routes ")(server);
+require("./src/routes/backend/English.routes")(server);
+require("./src/routes/backend/livewebsite.routes")(server);
+require("./src/routes/backend/adminAuth.routes")(server);
+require("./src/routes/backend/Menka.routes")(server);
+require("./src/routes/backend/Nextjs.routes")(server);
+require("./src/routes/backend/AWS.routes")(server);
+require("./src/routes/backend/TypeScript.routes")(server);
+require("./src/routes/backend/Github.routes")(server);
+require("./src/routes/backend/SQL.routes")(server);
+require("./src/routes/backend/Angular.routes")(server);
 
 // frontend api
-require('./src/routes/frontend/Javascript.routes')(server)
-require('./src/routes/frontend/ReactNotes.routes')(server)
-require('./src/routes/frontend/Node_js.routes')(server)
-require('./src/routes/frontend/WordPress.routes')(server)
-require('./src/routes/frontend/authentication.routes')(server)
-require('./src/routes/frontend/HTML_CSS.routes')(server)
-require('./src/routes/frontend/English.routes')(server)
-require('./src/routes/frontend/livewebsite.routes')(server)
+require("./src/routes/frontend/Javascript.routes")(server);
+require("./src/routes/frontend/ReactNotes.routes")(server);
+require("./src/routes/frontend/Node_js.routes")(server);
+require("./src/routes/frontend/WordPress.routes")(server);
+require("./src/routes/frontend/authentication.routes")(server);
+require("./src/routes/frontend/HTML_CSS.routes")(server);
+require("./src/routes/frontend/English.routes")(server);
+require("./src/routes/frontend/livewebsite.routes")(server);
 
 server.get("/", (request, response) => {
-  response.send("Server Working Fine.....")
-})
-
-
+  response.send("Server Working Fine.....");
+});
 
 // server.get("/rss", async (req, res) => {
 //   try {
@@ -104,31 +101,31 @@ server.get("/", (request, response) => {
 //   }
 // })
 
-
-
 server.get("*", (request, response) => {
-  response.send("Page not found.....")
-})
+  response.send("Page not found.....");
+});
 
 mongoose
   .connect(
     "mongodb+srv://naveensainijpr:Gionee123@cluster0.fdq1d.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
   )
   .then(async () => {
-
     const checkAdmin = await adminModel.find();
     if (checkAdmin.length == 0) {
-      let admin = await adminModel({ adminName: 'admin', adminPassword: 'admin123' });
+      let admin = await adminModel({
+        adminName: "admin",
+        adminPassword: "admin123",
+      });
       await admin.save();
     }
 
     server.listen("5000", () => {
-      console.log("Database Connected!")
-    })
+      console.log("Database Connected!");
+    });
   })
   .catch((error) => {
-    console.log("Database Not Connected!" + error)
-  })
+    console.log("Database Not Connected!" + error);
+  });
 
 //naveensainijpr
 //Gionee123
