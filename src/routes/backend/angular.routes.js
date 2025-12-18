@@ -1,6 +1,6 @@
 const express = require("express");
 const route = express.Router();
-const angularController = require("../../controllers/backend/angular.controller");
+const angularController = require("../../controllers/backend/Angular.controller");
 const multer = require("multer");
 const upload = multer();
 
