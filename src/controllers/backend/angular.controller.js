@@ -1,4 +1,4 @@
-const courseModel = require("../../models/angular.Schema");
+const courseModel = require("../../models/Angular.Schema");
 
 exports.create = async (request, response) => {
   console.log(request.body);
