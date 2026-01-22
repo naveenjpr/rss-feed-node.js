@@ -28,7 +28,7 @@ require("./src/routes/backend/TypeScript.routes")(server);
 require("./src/routes/backend/Github.routes")(server);
 require("./src/routes/backend/SQL.routes")(server);
 require("./src/routes/backend/Angular.routes")(server);
-
+require("./src/routes/backend/Python.routes")(server);
 
 // frontend api
 require("./src/routes/frontend/Javascript.routes")(server);
@@ -108,7 +108,7 @@ server.get("*", (request, response) => {
 
 mongoose
   .connect(
-    "mongodb+srv://naveensainijpr:Gionee123@cluster0.fdq1d.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+    "mongodb+srv://naveensainijpr:Gionee123@cluster0.fdq1d.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
   )
   .then(async () => {
     const checkAdmin = await adminModel.find();
