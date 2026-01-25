@@ -29,6 +29,7 @@ require("./src/routes/backend/Github.routes")(server);
 require("./src/routes/backend/SQL.routes")(server);
 require("./src/routes/backend/Angular.routes")(server);
 require("./src/routes/backend/Python.routes")(server);
+require("./src/routes/backend/Docker.routes")(server);
 
 // frontend api
 require("./src/routes/frontend/Javascript.routes")(server);
