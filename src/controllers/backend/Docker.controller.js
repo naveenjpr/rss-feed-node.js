@@ -36,38 +36,34 @@ exports.create = (request, response) => {
     });
 };
 
-exports.view = (request, response) => {
-  let condition = {
-    deleted_at: null,
-  };
+exports.view = async (request, response) => {
+  try {
+    let condition = { deleted_at: null };
 
-  DockerModel.find(condition)
-    .sort({ _id: -1 })
-    .then((result) => {
-      if (result.length > 0) {
-        var res = {
-          status: true,
-          message: "Record found successfully",
-          totalRecords: totalRecords,
-          data: result,
-        };
-        response.send(res);
-      } else {
-        var res = {
-          status: false,
-          message: "no record found",
-          data: "",
-        };
-        response.send(res);
-      }
-    })
-    .catch((error) => {
-      var res = {
+    const totalRecords = await DockerModel.countDocuments(condition);
+    const result = await DockerModel.find(condition).sort({ _id: -1 });
+
+    if (result.length > 0) {
+      response.send({
+        status: true,
+        message: "Record found successfully",
+        totalRecords: totalRecords,
+        data: result,
+      });
+    } else {
+      response.send({
         status: false,
-        message: error,
-      };
-      response.send(res);
+        message: "No record found",
+        totalRecords: 0,
+        data: [],
+      });
+    }
+  } catch (error) {
+    response.send({
+      status: false,
+      message: error.message,
     });
+  }
 };
 
 exports.details = (request, response) => {
