@@ -48,6 +48,7 @@ exports.view = (request, response) => {
         var res = {
           status: true,
           message: "Record found successfully",
+          totalRecords: totalRecords,
           data: result,
         };
         response.send(res);
