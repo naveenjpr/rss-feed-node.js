@@ -32,6 +32,7 @@ require("./src/routes/backend/Python.routes")(server);
 require("./src/routes/backend/Docker.routes")(server);
 require("./src/routes/backend/Testing.routes")(server);
 require("./src/routes/backend/PostgreSQL.routes")(server);
+require("./src/routes/backend/Supabase.routes")(server);
 
 // frontend api
 require("./src/routes/frontend/Javascript.routes")(server);
