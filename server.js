@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
@@ -35,6 +36,7 @@ require("./src/routes/backend/PostgreSQL.routes")(server);
 require("./src/routes/backend/Supabase.routes")(server);
 require("./src/routes/backend/SEO.routes")(server);
 require("./src/routes/backend/ReduxToolkit.routes")(server);
+require("./src/routes/backend/prompt.routes")(server);
 
 // frontend api
 require("./src/routes/frontend/Javascript.routes")(server);
