@@ -37,6 +37,7 @@ require("./src/routes/backend/Supabase.routes")(server);
 require("./src/routes/backend/SEO.routes")(server);
 require("./src/routes/backend/ReduxToolkit.routes")(server);
 require("./src/routes/backend/prompt.routes")(server);
+require("./src/routes/backend/EnvironmentVariables.routes")(server);
 
 // frontend api
 require("./src/routes/frontend/Javascript.routes")(server);
