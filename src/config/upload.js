@@ -5,8 +5,8 @@ const cloudinary = require("./cloudinary");
 const storage = new CloudinaryStorage({
   cloudinary,
   params: {
-    folder: "prompt",   // ⬅️ Ye Cloudinary dashboard mein folder ka name hai apne computer ka folder nahi hai.
-    allowed_formats: ["jpg", "png", "jpeg", "webp"],
+    folder: "prompt", // ⬅️ Ye Cloudinary dashboard mein folder ka name hai apne computer ka folder nahi hai.
+    allowed_formats: ["jpg", "png", "jpeg", "webp", "svg"],
   },
 });
 
