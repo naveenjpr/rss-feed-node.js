@@ -1,10 +1,22 @@
 const DockerModel = require("../../models/Docker.Schema");
+const cloudinary = require("../../config/cloudinary.js");
 
 exports.create = (request, response) => {
   console.log(request.body);
+
+  let images = [];
+
+  if (request.files && request.files.length > 0) {
+    images = request.files.map((file) => ({
+      url: file.path,
+      public_id: file.filename,
+    }));
+  }
+
   const data = new DockerModel({
     Question: request.body.Question,
     Answers: request.body.Answers,
+    images: images,
     status: request.body.status ? request.body.status : true,
   });
   data
@@ -96,41 +108,67 @@ exports.details = (request, response) => {
       };
     });
 };
-exports.update = (request, response) => {
-  const updateData = {
-    Question: request.body.Question,
-    Answers: request.body.Answers,
-    status: request.body.status ?? 1,
-  };
+exports.update = async (request, response) => {
+  try {
+    const id = request.params.id;
 
-  DockerModel.updateOne(
-    { _id: request.params.id, deleted_at: null },
-    { $set: updateData },
-  )
-    .then((result) => {
-      response.send({
-        status: true,
-        message: "Record updated successfully",
-        data: result,
+    // 🔹 Step 1: Find existing record
+    const record = await DockerModel.findById(id);
+
+    if (!record) {
+      return response.status(404).json({
+        status: false,
+        message: "Record not found",
       });
-    })
-    .catch((error) => {
-      let error_messages = [];
+    }
 
-      if (error.errors) {
-        for (let field in error.errors) {
-          error_messages.push(error.errors[field].message);
+    // 🔹 Step 2: Prepare update data
+    const updateData = {
+      Question: request.body.Question,
+      Answers: request.body.Answers,
+      status: request.body.status ?? true,
+    };
+
+    // 🔹 Step 3: If new images आए हैं
+    if (request.files && request.files.length > 0) {
+      // ❌ Step 3.1: Delete old images from Cloudinary
+      if (record.images && record.images.length > 0) {
+        for (let img of record.images) {
+          if (img.public_id) {
+            await cloudinary.uploader.destroy(img.public_id);
+          }
         }
-      } else {
-        error_messages.push(error.message);
       }
 
-      response.status(500).send({
-        status: false,
-        message: "Something went wrong",
-        error_messages,
-      });
+      // ✅ Step 3.2: Add new images
+      const newImages = request.files.map((file) => ({
+        url: file.path,
+        public_id: file.filename,
+      }));
+
+      updateData.images = newImages;
+    }
+
+    // 🔹 Step 4: Update DB
+    const updated = await DockerModel.findByIdAndUpdate(
+      id,
+      { $set: updateData },
+      { new: true },
+    );
+
+    return response.status(200).json({
+      status: true,
+      message: "Record updated successfully",
+      data: updated,
     });
+  } catch (error) {
+    console.error(error);
+    return response.status(500).json({
+      status: false,
+      message: "Something went wrong",
+      error: error.message,
+    });
+  }
 };
 
 exports.changeStatus = async (request, response) => {
@@ -164,19 +202,51 @@ exports.changeStatus = async (request, response) => {
 };
 exports.delete = async (request, response) => {
   try {
-    const courseId = request.params.id; // Assuming route is like /api/courses/:id
+    const id = request.params.id;
 
-    const deletedCourse = await DockerModel.findByIdAndDelete(courseId);
-
-    if (!deletedCourse) {
-      return response.status(404).json({ message: "docker notes not found" });
+    // 🔹 Step 1: Check ID
+    if (!id) {
+      return response.status(400).json({
+        status: false,
+        message: "ID is required",
+      });
     }
 
-    return response
-      .status(200)
-      .json({ message: " docker question deleted successfully" });
+    // 🔹 Step 2: Find record
+    const record = await DockerModel.findById(id);
+
+    if (!record) {
+      return response.status(404).json({
+        status: false,
+        message: "Docker note not found",
+      });
+    }
+
+    // 🔹 Step 3: Delete images from Cloudinary
+    if (record.images && record.images.length > 0) {
+      for (let img of record.images) {
+        if (img.public_id) {
+          try {
+            await cloudinary.uploader.destroy(img.public_id);
+          } catch (err) {
+            console.log("Cloudinary delete error:", err.message);
+          }
+        }
+      }
+    }
+
+    // 🔹 Step 4: Delete DB record
+    await DockerModel.findByIdAndDelete(id);
+
+    return response.status(200).json({
+      status: true,
+      message: "Record & images deleted permanently",
+    });
   } catch (error) {
     console.error(error);
-    return response.status(500).json({ message: "Server error" });
+    return response.status(500).json({
+      status: false,
+      message: "Server error",
+    });
   }
 };
