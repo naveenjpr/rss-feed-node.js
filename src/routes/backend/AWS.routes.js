@@ -2,7 +2,7 @@ const express = require("express");
 const route = express.Router();
 const AWSController = require("../../controllers/backend/AWS.controller");
 const multer = require("multer");
-const upload = multer();
+const upload = require("../../config/upload");
 
 module.exports = (app) => {
   route.post("/add", upload.array("images", 5), AWSController.create); //http://localhost:5000/api/backend/AWS/add
