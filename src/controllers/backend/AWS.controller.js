@@ -158,7 +158,7 @@ exports.update = async (request, response) => {
     }
 
     // 🔹 Step 4: Update DB
-    const updated = await DockerModel.findByIdAndUpdate(
+    const updated = await courseModel.findByIdAndUpdate(
       id,
       { $set: updateData },
       { new: true },
