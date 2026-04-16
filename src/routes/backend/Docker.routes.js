@@ -16,6 +16,8 @@ module.exports = (app) => {
   route.put("/change-status", upload.none(), DockerController.changeStatus); // http://localhost:5000/api/backend/Docker/change-status
 
   route.delete("/delete/:id", upload.none(), DockerController.delete); //http://localhost:5000/api/backend/Docker/delete
+  route.delete("/delete-image", upload.none(), DockerController.deleteSingleImage);
+  //http://localhost:5000/api/backend/Docker/delete-image
 
   app.use("/api/backend/Docker", route);
 };
