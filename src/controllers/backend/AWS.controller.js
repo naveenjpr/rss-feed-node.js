@@ -17,7 +17,6 @@ exports.create = async (request, response) => {
     images: images,
     status: request.body.status ? request.body.status : true,
   });
-  console.log("dtat", data);
 
   await data
     .save()
@@ -158,7 +157,7 @@ exports.update = async (request, response) => {
     }
 
     // 🔹 Step 4: Update DB
-    const updated = await DockerModel.findByIdAndUpdate(
+    const updated = await courseModel.findByIdAndUpdate(
       id,
       { $set: updateData },
       { new: true },
@@ -211,20 +210,40 @@ exports.changeStatus = async (request, response) => {
 };
 exports.delete = async (request, response) => {
   try {
-    const courseId = request.params.id; // Assuming route is like /api/courses/:id
+    const courseId = request.params.id;
 
-    const deletedCourse = await courseModel.findByIdAndDelete(courseId);
+    // 🔹 Step 1: Find record first
+    const record = await courseModel.findById(courseId);
 
-    if (!deletedCourse) {
-      return response.status(404).json({ message: "react notes not found" });
+    if (!record) {
+      return response.status(404).json({
+        status: false,
+        message: "Record not found",
+      });
     }
 
-    return response
-      .status(200)
-      .json({ message: " react  question deleted successfully" });
+    // 🔹 Step 2: Delete images from Cloudinary
+    if (record.images && record.images.length > 0) {
+      for (let img of record.images) {
+        if (img.public_id) {
+          await cloudinary.uploader.destroy(img.public_id);
+        }
+      }
+    }
+
+    // 🔹 Step 3: Delete record from DB
+    await courseModel.findByIdAndDelete(courseId);
+
+    return response.status(200).json({
+      status: true,
+      message: "Record + Images deleted permanently",
+    });
   } catch (error) {
-    console.error(error);
-    return response.status(500).json({ message: "Server error" });
+    return response.status(500).json({
+      status: false,
+      message: "Something went wrong",
+      error: error.message,
+    });
   }
 };
 
