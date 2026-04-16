@@ -210,6 +210,51 @@ exports.delete = async (request, response) => {
   }
 };
 
+exports.deleteSingleImage = async (request, response) => {
+  try {
+    const { id, public_id } = request.body; // record id and image public_id
+
+    const record = await courseModel.findById(id);
+
+    if (!record) {
+      return response.status(404).json({
+        status: false,
+        message: "Record not found"
+      });
+    }
+
+    // Find image in array
+    const imageIndex = record.images.findIndex(img => img.public_id === public_id);
+
+    if (imageIndex === -1) {
+      return response.status(404).json({
+        status: false,
+        message: "Image not found"
+      });
+    }
+
+    // Delete from Cloudinary
+    await cloudinary.uploader.destroy(public_id);
+
+    // Remove image from array
+    record.images.splice(imageIndex, 1);
+    await record.save();
+
+    response.json({
+      status: true,
+      message: "Image deleted successfully",
+      data: record.images
+    });
+
+  } catch (error) {
+    response.status(500).json({
+      status: false,
+      message: "Something went wrong",
+      error: error.message
+    });
+  }
+};
+
 // // ================= MULTIPLE DELETE =================
 // exports.multipleDelete = async (request, response) => {
 //   try {

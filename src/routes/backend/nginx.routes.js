@@ -19,6 +19,9 @@ module.exports = (app) => {
 
   route.delete("/delete/:id", upload.none(), nginxController.delete); //http://localhost:5000/api/backend/nginx/delete
 
+  route.delete("/delete-image", upload.none(), nginxController.deleteSingleImage);
+  // http://localhost:5000/api/backend/nginx/delete-image
+
   //   route.post("/multiple-delete", upload.none(), nginxController.multipleDelete);
 
   app.use("/api/backend/nginx", route);
@@ -29,4 +32,5 @@ module.exports = (app) => {
 //http://localhost:5000/api/backend/nginx/update/:id
 //http://localhost:5000/api/backend/nginx/change-status
 //http://localhost:5000/api/backend/nginx/delete/:id
+//http://localhost:5000/api/backend/nginx/delete-image
 //http://localhost:5000/api/backend/nginx/multiple-delete
