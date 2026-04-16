@@ -1,28 +1,26 @@
-const express = require('express');
+const express = require("express");
 const route = express.Router();
-const AWSController = require('../../controllers/backend/AWS.controller')
-const multer  = require('multer')
-const upload = multer()
+const AWSController = require("../../controllers/backend/AWS.controller");
+const multer = require("multer");
+const upload = multer();
 
+module.exports = (app) => {
+  route.post("/add", upload.array("images", 5), AWSController.create); //http://localhost:5000/api/backend/AWS/add
 
-module.exports = app => {
+  route.post("/view", upload.none(), AWSController.view); //http://localhost:5000/api/backend/AWS/view
 
+  route.post("/details/:id", upload.none(), AWSController.details); // http://localhost:5000/api/backend/AWS/details
 
-    route.post('/add',upload.none(), AWSController.create); //http://localhost:5000/api/backend/AWS/add
+  route.put("/update/:id", upload.array("images", 5), AWSController.update); // http://localhost:5000/api/backend/AWS/update
 
-    route.post('/view',upload.none(), AWSController.view);  //http://localhost:5000/api/backend/AWS/view
+  route.put("/change-status", upload.none(), AWSController.changeStatus); // http://localhost:5000/api/backend/AWS/change-status
 
-    route.post('/details/:id',upload.none(), AWSController.details) // http://localhost:5000/api/backend/AWS/details
+  route.delete("/delete/:id", upload.none(), AWSController.delete); //http://localhost:5000/api/backend/AWS/delete
 
-    route.put('/update/:id',upload.none(), AWSController.update) // http://localhost:5000/api/backend/AWS/update
+  route.delete("/delete-image", upload.none(), AWSController.deleteSingleImage);
 
-    route.put('/change-status',upload.none(), AWSController.changeStatus) // http://localhost:5000/api/backend/AWS/change-status
-
-    route.delete('/delete/:id',upload.none(), AWSController.delete)  //http://localhost:5000/api/backend/AWS/delete
-
-
-    route.post('/multiple-delete',upload.none(), AWSController.multipleDelete)
-
-    app.use('/api/backend/AWS', route);
-
-}
+  app.use("/api/backend/AWS", route);
+};
+//http://localhost:5000/api/backend/AWS/add
+//
+//http://localhost:5000/api/backend/AWS/view
