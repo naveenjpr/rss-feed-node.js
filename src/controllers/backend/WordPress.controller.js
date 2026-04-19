@@ -1,15 +1,26 @@
 const courseModel = require('../../models/WordPress.Schema')
+const cloudinary = require("../../config/cloudinary.js");
+
 
 exports.create = async (request, response) => {
     console.log(request.body)
-    data = new courseModel(
+
+    let images = [];
+
+    if (request.files && request.files.length > 0) {
+        images = request.files.map((file) => ({
+            url: file.path,
+            public_id: file.filename,
+        }));
+    }
+    const data = new courseModel(
 
         {
             Question: request.body.Question,
             Answers: request.body.Answers,
+            images: images,
             status: request.body.status ? request.body.status : true,
         })
-    console.log("dtat", data)
 
     await data.save().then((result) => {
         var res = {
@@ -48,7 +59,7 @@ exports.view = async (request, response) => {
             var res = {
                 status: true,
                 message: 'Record found successfully !!',
-                totalRecords:totalRecords,
+                totalRecords: totalRecords,
                 data: result
             }
 
@@ -67,7 +78,7 @@ exports.view = async (request, response) => {
         var res = {
             status: false,
             message: 'Something went wrong !!',
-            error:error.message
+            error: error.message
 
         }
 
@@ -107,42 +118,53 @@ exports.details = async (request, response) => {
 }
 
 exports.update = async (request, response) => {
-    const data = {
-        Question: request.body.Question,
-        Answers: request.body.Answers,
-        status: request.body.status ?? 1,
-    };
-
     try {
-        const result = await courseModel.updateOne(
-            { _id: request.params.id },
-            { $set: data }
-        );
+        const id = request.params.id;
 
-        const res = {
-            status: true,
-            message: 'Record updated successfully',
-            data: result,
-        };
-        response.send(res);
-    } catch (error) {
-        let error_messages = [];
+        const record = await courseModel.findById(id);
 
-        if (error.errors) {
-            for (let field in error.errors) {
-                error_messages.push(error.errors[field].message);
-            }
-        } else {
-            error_messages.push(error.message);
+        if (!record) {
+            return response.status(404).json({
+                status: false,
+                message: "Record not found",
+            });
         }
 
-        const res = {
-            status: false,
-            message: 'Something went wrong',
-            error_messages: error_messages,
+        const updateData = {
+            Question: request.body.Question,
+            Answers: request.body.Answers,
+            status: request.body.status ?? true,
         };
 
-        response.status(500).send(res);
+        if (request.files && request.files.length > 0) {
+            const newImages = request.files.map((file) => ({
+                url: file.path,
+                public_id: file.filename,
+            }));
+
+            updateData.images = [...record.images, ...newImages];
+        } else {
+            updateData.images = record.images;
+        }
+
+        const updated = await courseModel.findByIdAndUpdate(
+            id,
+            { $set: updateData },
+            { new: true },
+        );
+
+        return response.status(200).json({
+            status: true,
+            message: "Record updated successfully",
+            data: updated,
+        });
+    } catch (error) {
+        console.error(error);
+        return response.status(500).json({
+            status: false,
+            message: "Something went wrong",
+            error: error.message,
+        });
     }
 };
 
@@ -182,20 +204,83 @@ exports.changeStatus = async (request, response) => {
 }
 exports.delete = async (request, response) => {
     try {
-        const courseId = request.params.id; // Assuming route is like /api/courses/:id
+        const data = await courseModel.findById(request.params.id);
 
-        const deletedCourse = await courseModel.findByIdAndDelete(courseId);
-
-        if (!deletedCourse) {
-            return response.status(404).json({ message: "react notes not found" });
+        if (!data) {
+            return response.status(404).json({
+                status: false,
+                message: "node.js notes not found",
+            });
         }
 
-        return response.status(200).json({ message: " react  question deleted successfully" });
+        // 🔥 Delete all images from Cloudinary
+        if (data.images && data.images.length > 0) {
+            for (let img of data.images) {
+                if (img.public_id) {
+                    await cloudinary.uploader.destroy(img.public_id);
+                }
+            }
+        }
+
+        await courseModel.findByIdAndDelete(request.params.id);
+
+        return response.status(200).json({
+            status: true,
+            message: "node js notes deleted successfully",
+        });
     } catch (error) {
-        console.error(error);
-        return response.status(500).json({ message: "Server error" });
+        return response.status(500).json({
+            status: false,
+            message: "Server error",
+        });
     }
-}
+};
+
+
+exports.deleteSingleImage = async (request, response) => {
+    try {
+        const { id, public_id } = request.body; // record id and image public_id
+
+        const record = await courseModel.findById(id);
+
+        if (!record) {
+            return response.status(404).json({
+                status: false,
+                message: "Record not found"
+            });
+        }
+
+        // Find image in array
+        const imageIndex = record.images.findIndex(img => img.public_id === public_id);
+
+        if (imageIndex === -1) {
+            return response.status(404).json({
+                status: false,
+                message: "Image not found"
+            });
+        }
+
+        // Delete from Cloudinary
+        await cloudinary.uploader.destroy(public_id);
+
+        // Remove image from array
+        record.images.splice(imageIndex, 1);
+        await record.save();
+
+        response.json({
+            status: true,
+            message: "Image deleted successfully",
+            data: record.images
+        });
+
+    } catch (error) {
+        response.status(500).json({
+            status: false,
+            message: "Something went wrong",
+            error: error.message
+        });
+    }
+};
 exports.multipleDelete = async (request, response) => {
 
 }
