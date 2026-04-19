@@ -96,52 +96,48 @@ exports.details = async (request, response) => {
 // ================= UPDATE =================
 exports.update = async (request, response) => {
   try {
-    const oldData = await courseModel.findById(request.params.id);
+    const id = request.params.id;
 
-    if (!oldData) {
-      return response.status(404).send({
+    const record = await courseModel.findById(id);
+
+    if (!record) {
+      return response.status(404).json({
         status: false,
         message: "Record not found",
       });
     }
 
-    let images = oldData.images || [];
+    const updateData = {
+      Question: request.body.Question,
+      Answers: request.body.Answers,
+      status: request.body.status ?? true,
+    };
 
-    // 🔥 Agar new images aaye
     if (request.files && request.files.length > 0) {
-      // 🔹 old images delete
-      for (let img of oldData.images) {
-        if (img.public_id) {
-          await cloudinary.uploader.destroy(img.public_id);
-        }
-      }
-
-      // 🔹 new images set
-      images = request.files.map((file) => ({
+      const newImages = request.files.map((file) => ({
         url: file.path,
         public_id: file.filename,
       }));
+
+      updateData.images = [...record.images, ...newImages];
+    } else {
+      updateData.images = record.images;
     }
 
-    const result = await courseModel.updateOne(
-      { _id: request.params.id },
-      {
-        $set: {
-          Question: request.body.Question,
-          Answers: request.body.Answers,
-          status: request.body.status ?? true,
-          images: images,
-        },
-      },
+    const updated = await courseModel.findByIdAndUpdate(
+      id,
+      { $set: updateData },
+      { new: true },
     );
 
-    response.send({
+    return response.status(200).json({
       status: true,
       message: "Record updated successfully",
-      data: result,
+      data: updated,
     });
   } catch (error) {
-    response.status(500).send({
+    console.error(error);
+    return response.status(500).json({
       status: false,
       message: "Something went wrong",
       error: error.message,

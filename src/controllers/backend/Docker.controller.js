@@ -112,7 +112,6 @@ exports.update = async (request, response) => {
   try {
     const id = request.params.id;
 
-    // 🔹 Step 1: Find existing record
     const record = await DockerModel.findById(id);
 
     if (!record) {
@@ -122,34 +121,23 @@ exports.update = async (request, response) => {
       });
     }
 
-    // 🔹 Step 2: Prepare update data
     const updateData = {
       Question: request.body.Question,
       Answers: request.body.Answers,
       status: request.body.status ?? true,
     };
 
-    // 🔹 Step 3: If new images आए हैं
     if (request.files && request.files.length > 0) {
-      // ❌ Step 3.1: Delete old images from Cloudinary
-      if (record.images && record.images.length > 0) {
-        for (let img of record.images) {
-          if (img.public_id) {
-            await cloudinary.uploader.destroy(img.public_id);
-          }
-        }
-      }
-
-      // ✅ Step 3.2: Add new images
       const newImages = request.files.map((file) => ({
         url: file.path,
         public_id: file.filename,
       }));
 
-      updateData.images = newImages;
+      updateData.images = [...record.images, ...newImages];
+    } else {
+      updateData.images = record.images;
     }
 
-    // 🔹 Step 4: Update DB
     const updated = await DockerModel.findByIdAndUpdate(
       id,
       { $set: updateData },
