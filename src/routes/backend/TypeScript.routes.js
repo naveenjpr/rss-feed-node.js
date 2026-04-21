@@ -1,31 +1,39 @@
-const express = require('express');
+const express = require("express");
 const route = express.Router();
-const TypeScriptController = require('../../controllers/backend/TypeScript.controller')
-const multer  = require('multer')
-const upload = multer()
+const TypeScriptController = require("../../controllers/backend/TypeScript.controller");
+const multer = require("multer");
+const upload = require("../../config/upload");
 
+module.exports = (app) => {
+  route.post("/add", upload.array("images", 10), TypeScriptController.create); //http://localhost:5000/api/backend/TypeScript/add
 
-module.exports = app => {
+  route.post("/view", upload.none(), TypeScriptController.view); //http://localhost:5000/api/backend/TypeScript/view
 
+  route.post("/details/:id", upload.none(), TypeScriptController.details); // http://localhost:5000/api/backend/TypeScript/details
 
-    route.post('/add',upload.none(), TypeScriptController.create); //http://localhost:5000/api/backend/TypeScript/add
+  route.put(
+    "/update/:id",
+    upload.array("images", 10),
+    TypeScriptController.update,
+  ); // http://localhost:5000/api/backend/TypeScript/update
 
-    route.post('/view',upload.none(), TypeScriptController.view);  //http://localhost:5000/api/backend/TypeScript/view
+  route.put("/change-status", upload.none(), TypeScriptController.changeStatus); // http://localhost:5000/api/backend/TypeScript/change-status
 
-    route.post('/details/:id',upload.none(), TypeScriptController.details) // http://localhost:5000/api/backend/TypeScript/details
+  route.delete("/delete/:id", upload.none(), TypeScriptController.delete); //http://localhost:5000/api/backend/TypeScript/delete
+  route.delete(
+    "/delete-image",
+    upload.none(),
+    TypeScriptController.deleteSingleImage,
+  );
+  //http://localhost:5000/api/backend/TypeScriptController/delete-image
+  route.post(
+    "/multiple-delete",
+    upload.none(),
+    TypeScriptController.multipleDelete,
+  );
 
-    route.put('/update/:id',upload.none(), TypeScriptController.update) // http://localhost:5000/api/backend/TypeScript/update
-
-    route.put('/change-status',upload.none(), TypeScriptController.changeStatus) // http://localhost:5000/api/backend/TypeScript/change-status
-
-    route.delete('/delete/:id',upload.none(), TypeScriptController.delete)  //http://localhost:5000/api/backend/TypeScript/delete
-
-
-    route.post('/multiple-delete',upload.none(), TypeScriptController.multipleDelete)
-
-    app.use('/api/backend/TypeScript', route);
-
-}
+  app.use("/api/backend/TypeScript", route);
+};
 //http://localhost:5000/api/backend/TypeScript/add
 //http://localhost:5000/api/backend/TypeScript/view
 //http://localhost:5000/api/backend/TypeScript/details/:id

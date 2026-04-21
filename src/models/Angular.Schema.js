@@ -9,7 +9,18 @@ const angularSchema = new mongoose.Schema({
     type: String,
     required: [true, " react Answers  is required"],
   },
-
+  images: [
+    {
+      url: {
+        type: String,
+        default: "",
+      },
+      public_id: {
+        type: String,
+        default: "",
+      },
+    },
+  ],
   status: {
     type: Boolean,
     default: true,

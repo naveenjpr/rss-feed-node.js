@@ -1,35 +1,45 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const SQLSchema = new mongoose.Schema({
-    Question: {
+  Question: {
+    type: String,
+    required: [true, " SQL Question  is required"],
+  },
+  Answers: {
+    type: String,
+    required: [true, " SQL Answers  is required"],
+  },
+  images: [
+    {
+      url: {
         type: String,
-        required: [true, ' SQL Question  is required'],
-    },
-    Answers: {
+        default: "",
+      },
+      public_id: {
         type: String,
-        required: [true, ' SQL Answers  is required'],
+        default: "",
+      },
     },
- 
-    status: {
-        type: Boolean,
-        default: true
-    },
-  
-    created_at: {
-        type: Date,
-        default: Date.now
-    },
-    updated_at: {
-        type: Date,
-        default: Date.now
-    },
-    deleted_at: {
-        type: Date,
-        default: ''
-    }
+  ],
+  status: {
+    type: Boolean,
+    default: true,
+  },
 
+  created_at: {
+    type: Date,
+    default: Date.now,
+  },
+  updated_at: {
+    type: Date,
+    default: Date.now,
+  },
+  deleted_at: {
+    type: Date,
+    default: "",
+  },
 });
 
-const SQLModel = mongoose.model('SQLNotes', SQLSchema);
+const SQLModel = mongoose.model("SQLNotes", SQLSchema);
 
 module.exports = SQLModel;
