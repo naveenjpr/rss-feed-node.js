@@ -1,4 +1,5 @@
 const courseModel = require("../../models/Angular.Schema");
+const cloudinary = require("../../config/cloudinary.js");
 
 exports.create = async (request, response) => {
   let images = [];
@@ -274,4 +275,4 @@ exports.delete = async (request, response) => {
     });
   }
 };
-exports.multipleDelete = async (request, response) => {};
+exports.multipleDelete = async (request, response) => { };

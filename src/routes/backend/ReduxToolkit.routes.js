@@ -2,16 +2,20 @@ const express = require("express");
 const route = express.Router();
 const ReduxToolkitController = require("../../controllers/backend/ReduxToolkit.controller");
 const multer = require("multer");
-const upload = multer();
+const upload = require("../../config/upload");
 
 module.exports = (app) => {
-  route.post("/add", upload.none(), ReduxToolkitController.create); //http://localhost:5000/api/backend/ReduxToolkit/add
+  route.post("/add", upload.array("images", 10), ReduxToolkitController.create); //http://localhost:5000/api/backend/ReduxToolkit/add
 
   route.post("/view", upload.none(), ReduxToolkitController.view); //http://localhost:5000/api/backend/ReduxToolkit/view
 
   route.post("/details/:id", upload.none(), ReduxToolkitController.details); // http://localhost:5000/api/backend/ReduxToolkit/details
 
-  route.put("/update/:id", upload.none(), ReduxToolkitController.update); // http://localhost:5000/api/backend/ReduxToolkit/update
+  route.put(
+    "/update/:id",
+    upload.array("images", 10),
+    ReduxToolkitController.update,
+  ); // http://localhost:5000/api/backend/ReduxToolkit/update
 
   route.put(
     "/change-status",
@@ -20,7 +24,12 @@ module.exports = (app) => {
   ); // http://localhost:5000/api/backend/ReduxToolkit/change-status
 
   route.delete("/delete/:id", upload.none(), ReduxToolkitController.delete); //http://localhost:5000/api/backend/ReduxToolkit/delete
-
+  route.delete(
+    "/delete-image",
+    upload.none(),
+    ReduxToolkitController.deleteSingleImage,
+  );
+  //http://localhost:5000/api/backend/ReduxToolkit/delete-image
   route.post(
     "/multiple-delete",
     upload.none(),

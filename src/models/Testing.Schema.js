@@ -9,7 +9,18 @@ const TestingSchema = new mongoose.Schema({
     type: String,
     required: [true, " Testing Answers  is required"],
   },
-
+  images: [
+    {
+      url: {
+        type: String,
+        default: "",
+      },
+      public_id: {
+        type: String,
+        default: "",
+      },
+    },
+  ],
   status: {
     type: Boolean,
     default: true,

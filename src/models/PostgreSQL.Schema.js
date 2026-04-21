@@ -9,7 +9,18 @@ const PostgreSQLSchema = new mongoose.Schema({
     type: String,
     required: [true, " PostgreSQL Answers  is required"],
   },
-
+  images: [
+    {
+      url: {
+        type: String,
+        default: "",
+      },
+      public_id: {
+        type: String,
+        default: "",
+      },
+    },
+  ],
   status: {
     type: Boolean,
     default: true,

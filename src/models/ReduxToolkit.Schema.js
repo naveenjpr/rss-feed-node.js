@@ -9,7 +9,18 @@ const ReduxToolkitSchema = new mongoose.Schema({
     type: String,
     required: [true, " ReduxToolkit Answers  is required"],
   },
-
+  images: [
+    {
+      url: {
+        type: String,
+        default: "",
+      },
+      public_id: {
+        type: String,
+        default: "",
+      },
+    },
+  ],
   status: {
     type: Boolean,
     default: true,
@@ -25,7 +36,7 @@ const ReduxToolkitSchema = new mongoose.Schema({
   },
   deleted_at: {
     type: Date,
-    default: "",
+    default: null,
   },
 });
 
