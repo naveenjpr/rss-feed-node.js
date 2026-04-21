@@ -1,35 +1,47 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const MenkaSchema = new mongoose.Schema({
-    Question: {
-        type: String,
-        required: [true, ' react Question  is required'],
-    },
-    Answers: {
-        type: String,
-        required: [true, ' react Answers  is required'],
-    },
- 
-    status: {
-        type: Boolean,
-        default: true
-    },
-  
-    created_at: {
-        type: Date,
-        default: Date.now
-    },
-    updated_at: {
-        type: Date,
-        default: Date.now
-    },
-    deleted_at: {
-        type: Date,
-        default: ''
-    }
+  Question: {
+    type: String,
+    required: [true, " react Question  is required"],
+  },
+  Answers: {
+    type: String,
+    required: [true, " react Answers  is required"],
+  },
 
+  images: [
+    {
+      url: {
+        type: String,
+        default: "",
+      },
+      public_id: {
+        type: String,
+        default: "",
+      },
+    },
+  ],
+
+  status: {
+    type: Boolean,
+    default: true,
+  },
+
+  created_at: {
+    type: Date,
+    default: Date.now,
+  },
+  updated_at: {
+    type: Date,
+    default: Date.now,
+  },
+  deleted_at: {
+    type: Date,
+    default: "",
+  },
 });
 
-const MenkaModel = mongoose.model('MenkaNotes', MenkaSchema);
+const MenkaModel = mongoose.model("MenkaNotes", MenkaSchema);
 
 module.exports = MenkaModel;
