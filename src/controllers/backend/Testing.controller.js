@@ -252,7 +252,7 @@ exports.delete = async (request, response) => {
       }
     }
 
-    await courseModel.findByIdAndDelete(request.params.id);
+    await TestingModel.findByIdAndDelete(request.params.id);
 
     return response.status(200).json({
       status: true,
