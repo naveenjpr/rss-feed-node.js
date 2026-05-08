@@ -40,6 +40,8 @@ require("./src/routes/backend/prompt.routes")(server);
 require("./src/routes/backend/EnvironmentVariables.routes")(server);
 require("./src/routes/backend/nginx.routes")(server);
 require("./src/routes/backend/Firebase.routes")(server);
+require("./src/routes/backend/vocabulary.routes")(server);
+require("./src/routes/backend/php.routes")(server);
 
 // frontend api
 require("./src/routes/frontend/Javascript.routes")(server);
