@@ -42,6 +42,7 @@ require("./src/routes/backend/nginx.routes")(server);
 require("./src/routes/backend/Firebase.routes")(server);
 require("./src/routes/backend/vocabulary.routes")(server);
 require("./src/routes/backend/php.routes")(server);
+require("./src/routes/backend/GitHubActions.routes")(server);
 
 // frontend api
 require("./src/routes/frontend/Javascript.routes")(server);
