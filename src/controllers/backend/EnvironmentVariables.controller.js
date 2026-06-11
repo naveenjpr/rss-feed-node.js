@@ -3,19 +3,27 @@ const cloudinary = require("../../config/cloudinary");
 
 
 
-exports.create = async (request, response) => {
+exports.create = (request, response) => {
+    console.log(request.body);
 
+    let images = [];
 
-    data = new courseModel({
+    if (request.files && request.files.length > 0) {
+        images = request.files.map((file) => ({
+            url: file.path,
+            public_id: file.filename,
+        }));
+    }
+
+    const data = new courseModel({
         Question: request.body.Question,
         Answers: request.body.Answers,
+        images: images,
         status: request.body.status ? request.body.status : true,
-        image: request.file?.path,           // direct use
-        image_public_id: request.file?.filename,
     });
     console.log("dtat", data);
 
-    await data
+    data
         .save()
         .then((result) => {
             var res = {
@@ -23,6 +31,7 @@ exports.create = async (request, response) => {
                 message: "record create successfully",
                 data: result,
             };
+
             response.send(res);
         })
         .catch((error) => {
@@ -114,53 +123,51 @@ exports.details = async (request, response) => {
 
 exports.update = async (request, response) => {
     try {
-        const data = {
+        const id = request.params.id;
+
+        const record = await courseModel.findById(id);
+
+        if (!record) {
+            return response.status(404).json({
+                status: false,
+                message: "Record not found",
+            });
+        }
+
+        const updateData = {
             Question: request.body.Question,
             Answers: request.body.Answers,
             status: request.body.status ?? true,
         };
 
-        // 🔥 Agar new image aayi hai
-        if (request.file) {
-            // 🔹 old data fetch karo
-            const oldData = await courseModel.findById(request.params.id);
+        if (request.files && request.files.length > 0) {
+            const newImages = request.files.map((file) => ({
+                url: file.path,
+                public_id: file.filename,
+            }));
 
-            // 🔥 old image delete
-            if (oldData?.image_public_id) {
-                await cloudinary.uploader.destroy(oldData.image_public_id);
-            }
-
-            // 🔥 new image set
-            data.image = request.file.path;
-            data.image_public_id = request.file.filename;
+            updateData.images = [...record.images, ...newImages];
+        } else {
+            updateData.images = record.images;
         }
 
-        const result = await courseModel.updateOne(
-            { _id: request.params.id },
-            { $set: data }
+        const updated = await courseModel.findByIdAndUpdate(
+            id,
+            { $set: updateData },
+            { new: true },
         );
 
-        response.send({
+        return response.status(200).json({
             status: true,
             message: "Record updated successfully",
-            data: result,
+            data: updated,
         });
-
     } catch (error) {
-        let error_messages = [];
-
-        if (error.errors) {
-            for (let field in error.errors) {
-                error_messages.push(error.errors[field].message);
-            }
-        } else {
-            error_messages.push(error.message);
-        }
-
-        response.status(500).send({
+        console.error(error);
+        return response.status(500).json({
             status: false,
             message: "Something went wrong",
-            error_messages,
+            error: error.message,
         });
     }
 };
@@ -197,31 +204,46 @@ exports.changeStatus = async (request, response) => {
 };
 exports.delete = async (request, response) => {
     try {
-        const courseId = request.params.id;
+        const id = request.params.id;
 
-        // 🔹 Pehle data find karo
-        const data = await courseModel.findById(courseId);
-
-        if (!data) {
-            return response.status(404).json({
+        // 🔹 Step 1: Check ID
+        if (!id) {
+            return response.status(400).json({
                 status: false,
-                message: "EnvironmentVariables notes not found",
+                message: "ID is required",
             });
         }
 
-        // 🔥 Cloudinary image delete
-        if (data.image_public_id) {
-            await cloudinary.uploader.destroy(data.image_public_id);
+        // 🔹 Step 2: Find record
+        const record = await courseModel.findById(id);
+
+        if (!record) {
+            return response.status(404).json({
+                status: false,
+                message: "EnvironmentVariables note not found",
+            });
         }
 
-        // 🔥 DB se delete
-        await courseModel.findByIdAndDelete(courseId);
+        // 🔹 Step 3: Delete images from Cloudinary
+        if (record.images && record.images.length > 0) {
+            for (let img of record.images) {
+                if (img.public_id) {
+                    try {
+                        await cloudinary.uploader.destroy(img.public_id);
+                    } catch (err) {
+                        console.log("Cloudinary delete error:", err.message);
+                    }
+                }
+            }
+        }
+
+        // 🔹 Step 4: Delete DB record
+        await courseModel.findByIdAndDelete(id);
 
         return response.status(200).json({
             status: true,
-            message: "EnvironmentVariables notes deleted successfully",
+            message: "Record & images deleted permanently",
         });
-
     } catch (error) {
         console.error(error);
         return response.status(500).json({
@@ -230,4 +252,50 @@ exports.delete = async (request, response) => {
         });
     }
 };
+
+exports.deleteSingleImage = async (request, response) => {
+    try {
+        const { id, public_id } = request.body; // record id and image public_id
+
+        const record = await courseModel.findById(id);
+
+        if (!record) {
+            return response.status(404).json({
+                status: false,
+                message: "Record not found"
+            });
+        }
+
+        // Find image in array
+        const imageIndex = record.images.findIndex(img => img.public_id === public_id);
+
+        if (imageIndex === -1) {
+            return response.status(404).json({
+                status: false,
+                message: "Image not found"
+            });
+        }
+
+        // Delete from Cloudinary
+        await cloudinary.uploader.destroy(public_id);
+
+        // Remove image from array
+        record.images.splice(imageIndex, 1);
+        await record.save();
+
+        response.json({
+            status: true,
+            message: "Image deleted successfully",
+            data: record.images
+        });
+
+    } catch (error) {
+        response.status(500).json({
+            status: false,
+            message: "Something went wrong",
+            error: error.message
+        });
+    }
+};
+
 exports.multipleDelete = async (request, response) => { };

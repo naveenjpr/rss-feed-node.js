@@ -14,12 +14,18 @@ const EnvironmentVariablesSchema = new mongoose.Schema({
         type: Boolean,
         default: true,
     },
-    image: {
-        type: String,
-    },
-    image_public_id: {
-        type: String,
-    },
+    images: [
+        {
+            url: {
+                type: String,
+                default: "",
+            },
+            public_id: {
+                type: String,
+                default: "",
+            },
+        },
+    ],
     created_at: {
         type: Date,
         default: Date.now,

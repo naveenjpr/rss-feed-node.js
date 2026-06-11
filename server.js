@@ -44,6 +44,7 @@ require("./src/routes/backend/vocabulary.routes")(server);
 require("./src/routes/backend/php.routes")(server);
 require("./src/routes/backend/GitHubActions.routes")(server);
 require("./src/routes/backend/reactnative.routes")(server);
+require("./src/routes/backend/Ai.routes")(server);
 
 // frontend api
 require("./src/routes/frontend/Javascript.routes")(server);
