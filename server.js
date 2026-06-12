@@ -2,10 +2,33 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const compression = require("compression");
 let Parser = require("rss-parser");
 let parser = new Parser();
 const server = express();
+
+// Security Middleware
+const helmet = require("helmet");
+server.use(helmet());
+
+server.use(compression());
 server.use(cors());
+
+// Rate Limiter Setup
+const rateLimit = require("express-rate-limit");
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per 15 minutes
+  message: {
+    status: false,
+    message: "Too many requests from this IP, please try again after 15 minutes"
+  },
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
+
+// Apply the rate limiting middleware to all requests
+server.use(limiter);
 
 server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
@@ -60,63 +83,7 @@ server.get("/", (request, response) => {
   response.send("Server Working Fine.....");
 });
 
-// server.get("/rss", async (req, res) => {
-//   try {
-//     // RSS फीड URLs
-//     const feedUrls = [
-//       "https://nsearchives.nseindia.com/content/RSS/Corporate_action.xml",
-//       "https://nsearchives.nseindia.com/content/RSS/Daily_Buyback.xml",
-//       "https://nsearchives.nseindia.com/content/RSS/Voting_Results.xml",
-//       "https://www.indiatv.in/rssnews/topstory.xml",
-//     ]
 
-//     let allItems = []
-
-//     // सभी RSS फीड्स को प्रोसेस करें
-//     for (const url of feedUrls) {
-//       try {
-//         const feed = await parser.parseURL(url)
-//         // console.log("Fetching Feed:", feed.title)
-
-//         const items = feed.items.map((item) => {
-//           let imageUrl = ""
-
-//           // Check different possible sources for image URL
-//           if (item.enclosure && item.enclosure.url) {
-//             imageUrl = item.enclosure.url
-//           } else if (item["media:content"] && item["media:content"].url) {
-//             imageUrl = item["media:content"].url
-//           } else {
-//             // Extract image from description HTML
-//             const regex = /<img[^>]+src="([^">]+)"/g
-//             const match = regex.exec(item.content || item.description)
-//             if (match) {
-//               imageUrl = match[1] // Extracted image URL
-//             }
-//           }
-
-//           return {
-//             title: item.title,
-//             link: item.link,
-//             pubDate: item.pubDate,
-//             source: feed.title, // Feed का नाम जोड़ें
-//             imageUrl: imageUrl || "https://via.placeholder.com/150",
-//           }
-//         })
-
-//         allItems = [...allItems, ...items] // सभी आर्टिकल्स को मर्ज करें
-//       } catch (feedError) {
-//         console.error(`Error fetching ${url}:`, feedError)
-//       }
-//     }
-
-//     // JSON फॉर्मेट में डेटा भेजें
-//     res.json({ items: allItems })
-//   } catch (err) {
-//     console.error("Error fetching RSS feeds:", err)
-//     res.status(500).json({ error: "Failed to fetch RSS feeds" })
-//   }
-// })
 
 server.get("*", (request, response) => {
   response.send("Page not found.....");
